@@ -65,6 +65,8 @@ class EditProfileScreen(Screen):
             self.ids.pregnancy_situation.disabled = False
         else:
             self.ids.pregnancy_situation.disabled = True
+            profile_screen.ids.Pregnancy.text = "Hamilelik durumu: "
+            user_profile_data[10] = ""
         profile_screen.ids.gender.text = "Cinsiyet: " + selected_option
         user_profile_data[4] = selected_option
 
