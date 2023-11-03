@@ -1,0 +1,39 @@
+﻿id,name,unit_name
+1003,Protein,G
+1004,Total lipid (fat),G
+1008,Energy,KCAL
+1079,Fiber,G
+1085,Total fat,G
+1087,Calcium,MG
+1088,Chloride,MG
+1089,Iron,MG
+1090,Magnesium,MG
+1091,Phosphorus,MG
+1092,Potassium,MG
+1093,Sodium,MG
+1095,Zinc,MG
+1096,Chromium,UG
+1098,Copper,MG
+1100,Iodine,UG
+1101,Manganese,MG
+1102,Molybdenum,UG
+1103,Selenium,UG
+1106,Vitamin A,UG
+1109,Vitamin E ,MG
+1114,Vitamin D (D2 + D3),UG
+1124,Vitamin E,IU
+1149,"Salt, NaCl",MG
+1162,Vitamin C,MG
+1165,Thiamin,MG
+1166,Riboflavin,MG
+1167,Niacin,MG
+1170,Pantothenic acid,MG
+1175,Vitamin B 6,MG
+1176,Biotin,UG
+1177,Folate,UG
+1178,Vitamin B 12,UG
+1180,Choline,MG
+1183,Vitamin K (Menaquinone-4),UG
+1184,Vitamin K (Dihydrophylloquinone),UG
+1185,Vitamin K (phylloquinone),UG
+2039,Carbohydrate,G
