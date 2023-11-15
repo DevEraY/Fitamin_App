@@ -259,7 +259,7 @@ ScreenManager:
 
         Spinner:
             id: pregnancy_situation
-            text: "Select Status"
+            text: "Hamilelik Durumu"
             values: ["I am not pregnant or lactating", "I am pregnant", "I am lactating"]
             size_hint: None, None
             size: 150, 44

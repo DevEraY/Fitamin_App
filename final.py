@@ -61,12 +61,14 @@ class EditProfileScreen(Screen):
 
     def gender_belirleme (self, selected_option):
         profile_screen = self.manager.get_screen('profile')
+        profile_screen_2 = self.manager.get_screen('editProfile')
         if selected_option == 'Kadın':
             self.ids.pregnancy_situation.disabled = False
         else:
             self.ids.pregnancy_situation.disabled = True
             profile_screen.ids.Pregnancy.text = "Hamilelik durumu: "
             user_profile_data[10] = ""
+            profile_screen_2.ids.pregnancy_situation.text="Hamilelik Durumu"
         profile_screen.ids.gender.text = "Cinsiyet: " + selected_option
         user_profile_data[4] = selected_option
 
@@ -136,6 +138,28 @@ class DrawerList(ThemableBehavior, MDList):
     pass
 
 
+class RemainingIntake(BoxLayout):
+    def __init__(self, remaining_nutrients, **kwargs):
+        super().__init__(**kwargs)
+        self.orientation = 'vertical'
+        self.label = Label(text='Choose Input Type:')
+        self.remaining_nutrients = remaining_nutrients
+
+        for nutrient_info in self.remaining_nutrients:
+            nutrient_label = Label(text=f"{nutrient_info[0]}: {nutrient_info[1]} {nutrient_info[2]}")
+            self.add_widget(nutrient_label)
+
+
+class ConsumedAmount(BoxLayout):
+    def __init__(self, consumed_amount, **kwargs):
+        super().__init__(**kwargs)
+        self.orientation = 'vertical'
+        self.label = Label(text='Choose Input Type:')
+        self.consumed_amount = consumed_amount
+
+        for nutrient_info in self.consumed_amount:
+            nutrient_label = Label(text=f"{nutrient_info[0]}: {nutrient_info[1]} {nutrient_info[2]}")
+            self.add_widget(nutrient_label)
 
 class DualInput(BoxLayout):
     def __init__(self, food, **kwargs):
@@ -216,26 +240,70 @@ class DemoApp(MDApp):
     recommended_intakes = element_values_males_19_30_y  # Import recommendations from the Python file
 
     def do_this(self):
+        width, height = Window.size[0] * 0.8, Window.size[1] * 0.4
         self.total_nutrients_consumed = self.calculate_total_nutrients()
-
+        dolu_array = []
         remaining_intakes = self.calculate_remaining_intakes()
-
+        remanining_intakes_popup = Popup(
+            title='Remaining Intakes',
+            size_hint=(None, None),
+            size=(width, height),
+            auto_dismiss=False
+        )
         if remaining_intakes:
+
             print("Remaining Nutrient Intakes:")
             for nutrient_name, remaining_intake in remaining_intakes.items():
                 print(f"{nutrient_name}: {remaining_intake} units")
+
+                eklencek_array=[nutrient_name,remaining_intake,"units"]
+                dolu_array.append(eklencek_array)
+
+
         else:
             print("No data found for remaining nutrient intakes.")
 
+
+        writing_remaining_intakes = RemainingIntake(dolu_array)
+        remanining_intakes_popup.content = BoxLayout(orientation='vertical')
+        remanining_intakes_popup.content.add_widget(writing_remaining_intakes)
+
+
+        remanining_intakes_popup.open()
+
+
     def do_anotherthing(self):
+        width, height = Window.size[0] * 0.8, Window.size[1] * 0.4
         total_nutrients = self.calculate_total_nutrients()
+        dolu_array = []
+        consumed_amount_popup = Popup(
+            title='Remaining Intakes',
+            size_hint=(None, None),
+            size=(width, height),
+            auto_dismiss=False
+        )
         if total_nutrients:
             print("Total Nutrient Facts Consumed:")
             for nutrient_name, nutrient_amount in total_nutrients.items():
                 print(f"{nutrient_name}: {nutrient_amount} units")
+
+                eklencek_array=[nutrient_name,nutrient_amount,"units"]
+                dolu_array.append(eklencek_array)
+
         else:
             print("No food items consumed yet.")
 
+        writing_consumed_intakes = RemainingIntake(dolu_array)
+        content_layout = BoxLayout(orientation='vertical')
+        content_layout.add_widget(writing_consumed_intakes)
+        scroll_view = ScrollView(size_hint=(1, 1))
+        scroll_view.add_widget(content_layout)
+
+
+        consumed_amount_popup.content = scroll_view
+
+
+        consumed_amount_popup.open()
 
 
     def calculate_remaining_intake(self, nutrient_name):
