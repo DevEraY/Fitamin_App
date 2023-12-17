@@ -139,3 +139,70 @@ nutrient_values_females_over_70_y_g = {
     "α-Linolenic Acid": 1.1,
     "Protein": 46
 }
+# Pregnancy values
+nutrient_values_pregnancy_14_18_y = {
+    "Total Water": 3.0,
+    "Carbohydrate": 175,
+    "Total Fiber": 28,
+    "Fat": None,
+    "Linoleic Acid": 13,
+    "α-Linolenic Acid": 1.4,
+    "Protein": 71,
+
+}
+
+nutrient_values_pregnancy_19_30_y = {
+    "Total Water": 3.0,
+    "Carbohydrate": 175,
+    "Total Fiber": 28,
+    "Fat": None,
+    "Linoleic Acid": 13,
+    "α-Linolenic Acid": 1.4,
+    "Protein": 71,
+
+}
+
+nutrient_values_pregnancy_31_50_y = {
+    "Total Water": 3.0,
+    "Carbohydrate": 175,
+    "Total Fiber": 28,
+    "Fat": None,
+    "Linoleic Acid": 13,
+    "α-Linolenic Acid": 1.4,
+    "Protein": 71,
+
+}
+
+# Lactation values
+nutrient_values_lactation_14_18_y = {
+    "Total Water": 3.8,
+    "Carbohydrate": 210,
+    "Total Fiber": 29,
+    "Fat": None,
+    "Linoleic Acid": 13,
+    "α-Linolenic Acid": 1.3,
+    "Protein": 71,
+
+}
+
+nutrient_values_lactation_19_30_y = {
+    "Total Water": 3.8,
+    "Carbohydrate": 210,
+    "Total Fiber": 29,
+    "Fat": None,
+    "Linoleic Acid": 13,
+    "α-Linolenic Acid": 1.3,
+    "Protein": 71,
+
+}
+
+nutrient_values_lactation_31_50_y = {
+    "Total Water": 3.8,
+    "Carbohydrate": 210,
+    "Total Fiber": 29,
+    "Fat": None,
+    "Linoleic Acid": 13,
+    "α-Linolenic Acid": 1.3,
+    "Protein": 71,
+
+}

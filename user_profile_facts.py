@@ -1,7 +1,7 @@
 user_profile_data = [
     
     #Kullanıcı Adı [0]
-    "", 
+    "qwe",
 
     #Boy [1]
     178,
