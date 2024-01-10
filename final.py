@@ -3,6 +3,8 @@ from kivy.app import App
 from kivy.lang.builder import Builder
 from kivy.clock import Clock
 import time
+from kivy.uix.screenmanager import ScreenManagerException
+import kivy
 from kivy.lang import Builder
 from kivymd.uix.screen import Screen
 from kivymd.uix.list import MDList
@@ -24,7 +26,9 @@ from kivymd.app import MDApp
 from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 from kivymd.uix.selectioncontrol import MDCheckbox
 from kivymd.icon_definitions import md_icons
-
+from kivymd.uix.textfield import MDTextField
+from kivy.metrics import dp
+from kivymd.uix.navigationdrawer import MDNavigationLayout, MDNavigationDrawer
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.uix.list import TwoLineAvatarIconListItem, IconLeftWidget, IconRightWidget
 from kivymd.uix.selectioncontrol import MDCheckbox
@@ -48,7 +52,15 @@ import math
 from kivy.uix.gridlayout import GridLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.button import MDIconButton
-
+from kivymd.app import MDApp
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.navigationdrawer import MDNavigationLayout, MDNavigationDrawer
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.screenmanager import MDScreenManager
+from kivymd.uix.toolbar import MDTopAppBar
+from kivymd.icon_definitions import md_icons
+from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
+from kivy.uix.widget import Widget
 
 class WelcomeScreen(Screen):
     def welcome_screen_enter(self):
@@ -80,13 +92,14 @@ class ProfileScreen(Screen):
             data = json.load(file)
 
         self.ids.isim.text = str(data[0])
-        self.ids.age.text = str(data[3])
-        self.ids.height.text = str(data[1])
-        self.ids.weight.text = str(data[2])
-        self.ids.gender.text = str(data[4])
-        self.ids.BMI.text = str(data[9])
+        self.ids.age.text = f'Age: {data[3]}'
+        self.ids.height.text = f'Height: {data[1]}'
+        self.ids.weight.text = f'Weight: {data[2]}'
+        self.ids.gender.text = f'Gender: {data[4]}'
+        self.ids.BMI.text = f'BMI: {data[9]}'
         #self.ids.Activity = data[6]
         #self.ids.Pregnancy = data[0]
+
 
     def on_pre_enter(self, *args):
         # Call the update_profile_screen method when the screen is about to be entered
@@ -109,6 +122,11 @@ class CalculatorScreen(Screen):
 
 
 
+class AboutScreen(Screen):
+    pass
+
+
+
 
 
 
@@ -118,7 +136,7 @@ class EditProfileScreen(Screen):
     def gender_belirleme (self, selected_option):
         profile_screen = self.manager.get_screen('profile')
         profile_screen_2 = self.manager.get_screen('editProfile')
-        if selected_option == 'Kadın':
+        if selected_option == 'Female':
             self.ids.pregnancy_situation.disabled = False
         else:
             self.ids.pregnancy_situation.disabled = True
@@ -146,8 +164,12 @@ class EditProfileScreen(Screen):
 
         new_name = self.ids.edited_isim.text
         new_age = int(self.ids.edited_age.text)
-        new_height = self.ids.edited_height.text
-        new_weight = self.ids.edited_weight.text
+        new_height = int(self.ids.edited_height.text)
+        new_weight = int(self.ids.edited_weight.text)
+        new_activity_level = self.ids.aktiflik_secme.text
+
+
+
 
 
         profile_screen = self.manager.get_screen('profile')
@@ -159,12 +181,30 @@ class EditProfileScreen(Screen):
         new_gender = user_profile_data[4]
         pregnancy_situation = user_profile_data[10]
         
-        #recommended_intakes editleme
-        if new_gender == "Erkek" :
+        # recommended_intakes editleme
+
+        if new_gender == "Male" :
+
+            ######### Setting activity levels ###########
+            if new_activity_level == "No exercise":
+                new_activity_level_multiplier = 1.3
+            elif new_activity_level == "1-3 times weekly light exercise":
+                new_activity_level_multiplier = 1.6
+            elif new_activity_level == "3-5 times weekly exercise":
+                new_activity_level_multiplier = 1.7
+            elif new_activity_level == "Exercise everyday or 3-5 times weekly instense exercise":
+                new_activity_level_multiplier = 2.1
+            elif new_activity_level == "5-7 times weekly intense exercise":
+                new_activity_level_multiplier = 2.4
+            else:
+                print("Aktiflik seçme çalışmıyor")
+            ##############################################
+
             if 1<=new_age<=3 :
                 self.new_recommended_intakes_full_list.update(element_values_children_1_3_y)
                 self.new_recommended_intakes_full_list.update(nutrient_values_children_1_3_y_g)
                 self.new_recommended_intakes_full_list.update(vitamin_values_children_1_3_y)
+
 
             elif 4<=new_age<=8 :
                 self.new_recommended_intakes_full_list.update(element_values_children_4_8_y)
@@ -202,8 +242,22 @@ class EditProfileScreen(Screen):
                 self.new_recommended_intakes_full_list.update(vitamin_values_males_gt_70_plus_y)
 
 
-        elif new_gender =="Kadın" :
+        elif new_gender =="Female" :
 
+            ######### Setting activity levels ###########
+            if new_activity_level == "No exercise":
+                new_activity_level_multiplier = 1.3
+            elif new_activity_level == "1-3 times weekly light exercise":
+                new_activity_level_multiplier = 1.5
+            elif new_activity_level == "3-5 times weekly exercise":
+                new_activity_level_multiplier = 1.6
+            elif new_activity_level == "Exercise everyday or 3-5 times weekly instense exercise":
+                new_activity_level_multiplier = 1.9
+            elif new_activity_level == "5-7 times weekly intense exercise":
+                new_activity_level_multiplier = 2.2
+            else:
+                print("Aktiflik seçme çalışmıyor")
+            ###########################################
 
 
             if pregnancy_situation == "I am pregnant" :
@@ -283,24 +337,55 @@ class EditProfileScreen(Screen):
                     self.new_recommended_intakes_full_list.update(vitamin_values_females_gt_70_plus_y)
 
 
+
+        ####### BASAL METABOLISM EQUATION #####
+        if new_gender == 'Male':
+            if 0 <= new_weight <= 3:
+                new_basal_metabolism_rate = (60.9 * new_weight) - 54
+            elif 3 < new_weight <= 10:
+                new_basal_metabolism_rate = (22.7 * new_weight) + 495
+            elif 10 < new_weight <= 18:
+                new_basal_metabolism_rate = (17.5 * new_weight) + 651
+            elif 18 < new_weight <= 30:
+                new_basal_metabolism_rate = (15.3 * new_weight) + 679
+            elif 30 < new_weight <= 60:
+                new_basal_metabolism_rate = (11.6 * new_weight) + 879
+            elif new_weight > 60:
+                new_basal_metabolism_rate = (13.5 * new_weight) + 487
+            else:
+                print("basal metabolism cant be calculated")  # Handle invalid weight values
+
+        elif new_gender == 'Female':
+            if 0 <= new_weight <= 3:
+                new_basal_metabolism_rate = (61.0 * new_weight) - 51
+            elif 3 < new_weight <= 10:
+                new_basal_metabolism_rate = (22.5 * new_weight) + 499
+            elif 10 < new_weight <= 18:
+                new_basal_metabolism_rate = (12.2 * new_weight) + 746
+            elif 18 < new_weight <= 30:
+                new_basal_metabolism_rate = (14.7 * new_weight) + 496
+            elif 30 < new_weight <= 60:
+                new_basal_metabolism_rate = (8.7 * new_weight) + 829
+            elif new_weight > 60:
+                new_basal_metabolism_rate = (10.5 * new_weight) + 596
+            else:
+                print("basal metabolisma rate hesaplama çalışmıyor")  # Handle invalid weight values
+
         ##BMI da ekleyelim gelmişken
-        BMI = int(new_weight) / ((int(new_height) / 100) ** 2)
-        profile_screen.ids.BMI.text = f'BMI: {BMI}'
+        new_BMI = int(new_weight) / ((int(new_height) / 100) ** 2)
+        profile_screen.ids.BMI.text = f'BMI: {new_BMI}'
 
 
         #proteini updatele#
         self.new_recommended_intakes_full_list["Protein"] = 0.8 * int(new_weight)
+
         app.recommended_intakes = self.new_recommended_intakes_full_list
 
         # Basal Metabolism rate calculation according to Mifflin Equation {10.1093/ajcn/51.2.241}
 
-        new_BasalMetabolismRate = 0
+        new_daily_recommended_calorie_intake = new_basal_metabolism_rate * new_activity_level_multiplier
+        self.new_recommended_intakes_full_list["Energy"] = new_daily_recommended_calorie_intake
 
-        if new_gender == "Erkek":
-            new_BasalMetabolismRate = (9.99*int(new_weight))+(6.25*int(new_height))+5
-
-        elif new_gender == "Kadın":
-            new_BasalMetabolismRate = (9.99*int(new_weight))+(6.25*int(new_height))-161
 
         # yeni verileri belleğe alma
         user_profile_data[0] = new_name
@@ -308,8 +393,8 @@ class EditProfileScreen(Screen):
         user_profile_data[2] = new_weight
         user_profile_data[3] = new_age
 
-        user_profile_data[5] = new_BasalMetabolismRate
-        user_profile_data[9] = BMI
+        #user_profile_data[5] = new_BasalMetabolismRate
+        user_profile_data[9] = new_BMI
 
         filename = "user_profile_data.json"
         with open(filename, 'r') as file:
@@ -320,13 +405,20 @@ class EditProfileScreen(Screen):
             data[1] = new_height
             data[2] = new_weight
             data[3] = new_age
+            data[4] = new_gender
+            data[5] = new_basal_metabolism_rate
+            data[6] = new_activity_level
+            data[7] = new_activity_level_multiplier
+            data[8] = new_daily_recommended_calorie_intake
+            data[9] = new_BMI
 
-            data[5] = new_BasalMetabolismRate
-            data[9] = BMI
+
 
         with open(filename, 'w') as file:
             json.dump(data, file)
         ##############################################
+        with open("idk", 'w') as file:
+            json.dump(self.new_recommended_intakes_full_list, file)
 
 
         app.save_user_profile_data(user_profile_data)
@@ -415,6 +507,146 @@ class GramsInput(BoxLayout):
         self.add_widget(self.grams_input)
 
 
+class FoodScreen(Screen):
+
+    def __init__(self, name, **kwargs):
+        super(FoodScreen, self).__init__(**kwargs)
+        self.name = name
+
+        self.name_edited=name.replace(' ', '_').replace('/', '_').replace(',','_')
+        file_path = self.name_edited + "_data.csv"
+        self.foods={}
+
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=10)
+
+        # Add a search bar
+        search_layout = BoxLayout( size_hint_y=None, height=50)
+        search_icon = MDIconButton(icon='magnify')
+        search_field = TextInput(hint_text='Search item', multiline=False)
+        search_field.bind(text=self.filter_items)
+        search_layout.add_widget(search_icon)
+        search_layout.add_widget(search_field)
+
+        # Add an MDList container
+        self.Liste = MDList(id="container")
+
+        final_df = pd.read_csv(file_path)
+        final_df["portion_amount"].fillna("", inplace=True)
+        final_df["portion_name"].fillna("", inplace=True)
+        final_df["gram_weight"].fillna("", inplace=True)
+
+        for _, row in final_df.iterrows():
+            description = row['description']
+            name = row['name']
+            amount = row['amount']
+            unit = row['unit_name']
+            fdc_id = row['fdc_id']
+            portion_amount = row["portion_amount"]
+            portion_name = row["portion_name"]
+            gram_weight = row["gram_weight"]
+
+            if description not in self.foods:
+                self.foods[description] = Food(description)
+
+            self.foods[description].add_nutrient(name, amount, unit)
+            self.foods[description].add_fdc_id(fdc_id)
+            self.foods[description].add_portion(portion_amount, portion_name, gram_weight)
+        app = MDApp.get_running_app()
+        for food_description, food_instance in self.foods.items():
+            
+            item = TwoLineAvatarIconListItem(text=food_description, secondary_text="Additional Info")
+            on_release_function = lambda x, food_description=food_description, food_instance=food_instance: app.show_dual_input_popup(food_instance)
+
+            item.bind(on_release=on_release_function)
+
+            self.Liste.add_widget(item)
+
+            # Wrap the MDList in an MDScrollView
+        scroll_view = ScrollView()
+        scroll_view.add_widget(self.Liste)
+        # Add the MDList to the layout
+        layout.add_widget(search_layout)
+        layout.add_widget(scroll_view)
+
+
+
+
+        # MDNavigationDrawer code added here
+        nav_layout = MDNavigationLayout()
+        navigation_screen_manager = MDScreenManager()
+        navigation_screen = MDScreen()
+        top_app_bar = MDTopAppBar(title="Navigation Drawer",elevation=5, pos_hint={"top": 1},  left_action_items=[["menu", lambda x: nav_drawer.set_state('toggle')]])
+
+        nav_drawer = MDNavigationDrawer(orientation = "vertical", padding = "8dp", spacing ="8dp")
+        content_drawer = MDBoxLayout(orientation="vertical", padding="8dp", spacing="8dp")
+
+        avatar = Image(size_hint=(0.5, 0.5), source="FitaminAppIcon.jpg")
+        content_drawer.add_widget(avatar)
+
+        content_drawer.add_widget(Label(text="Fitamin App", size_hint_y=None, height=48))
+        content_drawer.add_widget(
+            Label(text="Have a healthy diet, live a healthy life", size_hint_y=None, height=48))
+
+        scroll_view = ScrollView()
+        drawer_list = MDList(id="md_list")
+
+        profile_screen_icon_list_item = OneLineIconListItem(text="Profile", on_release=lambda x: app.change_screen("profile"))
+        profile_icon =IconLeftWidget(icon = "account")
+        profile_screen_icon_list_item.add_widget(profile_icon)
+        drawer_list.add_widget(profile_screen_icon_list_item)
+
+        calculator_screen_icon_list_item = OneLineIconListItem(text="Hesapla", on_release=lambda x: app.change_screen("calculator"))
+        calculator_icon = IconLeftWidget(icon="calculator")
+        calculator_screen_icon_list_item.add_widget(calculator_icon)
+        drawer_list.add_widget(calculator_screen_icon_list_item)
+
+        drawer_list.add_widget(OneLineIconListItem(text="About the Fitamin App"))
+
+        empty_widget = Widget()
+
+        box_layout_for_searchbar_spacing = MDBoxLayout(orientation="vertical",spacing="5dp", height=dp(100))
+        box_layout_for_searchbar_spacing.add_widget(top_app_bar)
+        box_layout_for_searchbar_spacing.add_widget(empty_widget)
+
+
+        navigation_screen.add_widget(box_layout_for_searchbar_spacing)
+        navigation_screen_manager.add_widget(navigation_screen)
+        nav_layout.add_widget(navigation_screen_manager)
+
+        scroll_view.add_widget(drawer_list)
+        content_drawer.add_widget(scroll_view)
+        nav_drawer.add_widget(content_drawer)
+
+        nav_layout.add_widget(nav_drawer)
+
+        ikinci_scroll_view = ScrollView(pos_hint= {"center_x": 0.5, "center_y" : 0.37})
+        ikinci_scroll_view.add_widget(layout)
+
+        self.add_widget(ikinci_scroll_view)
+        self.add_widget(nav_layout)
+
+
+
+
+
+
+    def filter_items(self, instance, text):
+        """Filter and update the list based on the search criteria."""
+        app = MDApp.get_running_app()
+
+        # Clear existing items in the MDList
+        self.Liste.clear_widgets()
+
+        for food_description, food_instance in self.foods.items():
+            if text.lower() in food_description.lower():
+                item = TwoLineAvatarIconListItem(text=food_description, secondary_text="Additional Info")
+                on_release_function = lambda x, food_description=food_description, food_instance=food_instance: app.show_dual_input_popup(food_instance)
+
+                item.bind(on_release=on_release_function)
+
+                self.Liste.add_widget(item)
+
+
 # Define a class to represent a food item
 class Food:
     def __init__(self, description):
@@ -446,7 +678,7 @@ class FitaminApp(MDApp):
 
 
 
-############################################BUCKET LIST (FOODS CONSUMED) MODIFICATION############################################
+############################################ BUCKET LIST (FOODS CONSUMED) MODIFICATION ############################################
     def create_entry_layout(self, food_name, grams, popup):
         label_text = f"{food_name}: {grams} grams"
         label = MDLabel(text=label_text)
@@ -499,12 +731,23 @@ class FitaminApp(MDApp):
 
                 # Fill in the loaded data to the existing user_profile_data
                 for i, value in enumerate(loaded_data):
-                    user_profile_data[i] = value
-
-                print("User profile data loaded successfully.")
+                    if i < 10 :
+                        user_profile_data[i] = value
+                        print("User profile data loaded successfully.")
         except FileNotFoundError:
             print("No user profile data found. Starting with default data.")
-#####################################################################################################################
+         ############### For the second one ####################################################################################################
+
+
+        try:
+            with open('idk.json', 'r') as idk_file:
+                idk_data = json.load(idk_file)
+                self.recommended_intakes = idk_data
+                print("Recommended intakes loaded from 'idk.json'.")
+
+        except FileNotFoundError:
+            print("No 'idk.json' file found. Using default recommended intakes.")
+
 #Making user add own food
     # def add_new_food(self):
     #     with open("new_food_data.json", "r") as file:
@@ -708,10 +951,10 @@ class FitaminApp(MDApp):
 
 
 
-    def confirm_quantity_to_food_basket(self, food_description, user_s_consumed_portions):
-        food_instance = self.foods.get(food_description)
-        data_portions=food_instance.portion_amount
-        data_grams = food_instance.gram_weight
+    def confirm_quantity_to_food_basket(self, food, user_s_consumed_portions):
+        food_instance = food
+        data_portions=food.portion_amount
+        data_grams = food.gram_weight
         if food_description in self.food_basket:
             self.food_basket[food_description] += user_s_consumed_portions*(data_grams/data_portions)
         else:
@@ -723,7 +966,7 @@ class FitaminApp(MDApp):
         else:
             self.food_basket[food_description] = grams
 
-    def show_dual_input_popup(self, food_description):
+    def show_dual_input_popup(self, food_instance):
         width, height = Window.size[0] * 0.8, Window.size[1] * 0.4
         dual_input_popup = Popup(
             title='Enter Amount',
@@ -731,9 +974,6 @@ class FitaminApp(MDApp):
             size=(width, height),
             auto_dismiss=True
         )
-
-        # Get the Food object for the selected food description
-        food_instance = self.foods.get(food_description)
 
         dual_input_widget = DualInput(food_instance)
 
@@ -743,12 +983,13 @@ class FitaminApp(MDApp):
 
         def confirm_input_type(instance):
             input_type = dual_input_widget.input_type.text.strip().lower()  # Convert to lowercase and remove leading/trailing spaces
-            if hasattr(food_instance, 'portion_name') and input_type == food_instance.portion_name and not input_type == "":
-                self.show_quantity_popup(food_description, food_instance)
+            if hasattr(food_instance,
+                       'portion_name') and input_type == food_instance.portion_name and not input_type == "":
+                self.show_quantity_popup(food_instance)
             elif input_type == 'grams':
-                self.show_grams_popup(food_description)
+                self.show_grams_popup(food_instance)
             else:
-                if food_instance.portion_name != "" :
+                if food_instance.portion_name != "":
                     print(f'Invalid input type. Please enter "{food_instance.portion_name}" or "grams".')
                 else:
                     print(f'Invalid input type. Please enter "grams".')
@@ -762,9 +1003,9 @@ class FitaminApp(MDApp):
 
         dual_input_popup.open()
 
-    def show_quantity_popup(self, food_description, food):
+    def show_quantity_popup(self, food):
         quantity_popup = Popup(
-            title=f'Enter Amount for {food_description}',
+            title=f'Enter Amount for {food.description}',
             size_hint=(None, None),
             size=(400, 200),
             auto_dismiss=False
@@ -779,7 +1020,7 @@ class FitaminApp(MDApp):
             quantity = float(quantity_input.quantity_input.text)
 
             # You can now use the quantity as needed.
-            self.confirm_quantity_to_food_basket(food_description, quantity)
+            self.confirm_quantity_to_food_basket(food, quantity)
 
             print(f'You ate {quantity} {food.portion_name} of {food.description}')
             self.calculate_total_nutrients()
@@ -794,9 +1035,9 @@ class FitaminApp(MDApp):
 
         quantity_popup.open()
 
-    def show_grams_popup(self, food_description):
+    def show_grams_popup(self, food): #burdaki food_description'ı food yaptım
         grams_popup = Popup(
-            title=f'Enter Grams for {food_description}',
+            title=f'Enter Grams for {food.description}',
             size_hint=(None, None),
             size=(400, 200),
             auto_dismiss=False
@@ -812,8 +1053,8 @@ class FitaminApp(MDApp):
 
         def confirm_grams(instance):
             grams = float(grams_input.text)
-            self.confirm_grams_to_food_basket(food_description, grams)  # Add to food_basket
-            print(f'You consumed {grams} grams of {food_description}')
+            self.confirm_grams_to_food_basket(food, grams)  # Add to food_basket
+            print(f'You consumed {grams} grams of {food.description}')
 
             self.calculate_total_nutrients()
             grams_popup.dismiss()
@@ -831,8 +1072,8 @@ class FitaminApp(MDApp):
 
     def calculate_total_nutrients(self):
         total_nutrients = {}  # Dictionary to store total nutrient values
-        for food_description, amount in self.food_basket.items():
-            food_instance = self.foods.get(food_description)
+        for food_instance, amount in self.food_basket.items():
+
 
             if food_instance:
                 for nutrient_name, (nutrient_amount, unit) in food_instance.nutrients.items():
@@ -851,6 +1092,27 @@ class FitaminApp(MDApp):
 
     def change_screen(self, screen_name):
         self.root.current = screen_name
+
+    def open_food_screen(self, item_text):
+        # Check if the screen already exists
+        existing_screen = None
+        try:
+            existing_screen = self.root.get_screen(item_text)
+        except kivy.uix.screenmanager.ScreenManagerException:
+            pass
+
+        if existing_screen:
+            # If the screen exists, switch to it
+            self.root.current = item_text
+        else:
+            # If the screen doesn't exist, create a new FoodScreen instance
+            new_food_screen = FoodScreen(name=item_text)
+
+            # Add the new screen to the screen manager
+            self.root.add_widget(new_food_screen)
+
+            # Switch to the new screen
+            self.root.current = item_text
 
     def calculate_average_percentage_consumed(self):
         circular_progress_bar = self.root.get_screen(
@@ -909,9 +1171,11 @@ class FitaminApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.load_user_profile_data()
+
         kullanici_adi = user_profile_data[0]
         self.root = Builder.load_string(navigation_helper)
         print(kullanici_adi)
+
         if not kullanici_adi:
             # User doesn't have a Kullanici Adi, navigate to WelcomeScreen
 
@@ -922,7 +1186,21 @@ class FitaminApp(MDApp):
             self.root.current = 'calculator'
           # Load the Kivy language string
 
+
+##############################YENİ_LİSTE##############################
         Liste = self.root.get_screen("calculator").ids.container
+
+        group_names_file = pd.read_excel('food_class_descriptions.xlsx')
+        group_names = group_names_file['FdGrp_desc']
+
+        for group_name in group_names:
+            item = TwoLineAvatarIconListItem(text=group_name, secondary_text="Additional Info")
+            item.bind(on_release=lambda x, item_text=group_name: self.open_food_screen(item_text))
+            Liste.add_widget(item)
+
+        ###################################33
+
+
         circular_progress_bar = self.root.get_screen("calculator").ids.progressbar  # Assuming "progressbar" is the ID of your CircularProgressBar
         circular_progress_bar.value = 0
 
@@ -958,64 +1236,12 @@ class FitaminApp(MDApp):
         #
         # final_df = pd.merge(grouped_df, food_portion_final_df, left_on='fdc_id', right_on='fdc_id')
 
-        final_df = pd.read_csv("food_information_per_description_sorted.csv")
-        final_df["portion_amount"].fillna("", inplace=True)
-        final_df["portion_name"].fillna("", inplace=True)
-        final_df["gram_weight"].fillna("", inplace=True)
 
-        for _, row in final_df.iterrows():
-            description = row['description']
-            name = row['name']
-            amount = row['amount']
-            unit = row['unit_name']
-            fdc_id = row['fdc_id']
-            portion_amount = row["portion_amount"]
-            portion_name = row["portion_name"]
-            gram_weight = row["gram_weight"]
-
-            if description not in self.foods:
-                self.foods[description] = Food(description)
-
-            self.foods[description].add_nutrient(name, amount,unit)
-            self.foods[description].add_fdc_id(fdc_id)
-            self.foods[description].add_portion(portion_amount, portion_name, gram_weight)
-
-        #for _, row in grouped_df.iterrows():
-           # description = row['description']
-          #  name = row['name']
-          #  amount = row['amount']
-
-          #  if description not in self.foods:
-          #      self.foods[description] = Food(description)  # Pass fdc_id to Food constructor
-
-          #  self.foods[description].add_nutrient(name, amount,unit)
-
-        for food_description, food_instance in self.foods.items():
-            item = TwoLineAvatarIconListItem(text=food_description, secondary_text="Additional Info")
-            item.bind(
-                on_release=lambda x, food_description=food_description: self.show_dual_input_popup(food_description))
-
-            Liste.add_widget(item)
 
 
         return self.root
 
-    def filter_items(self, text):
-        """Filter and update the list based on the search criteria."""
-        # Assuming you have a reference to the MDList
-        container = self.root.get_screen("calculator").ids.container
 
-        # Clear existing items in the MDList
-        container.clear_widgets()
-
-        # Add items based on the search criteria
-        for food_description, food_instance in self.foods.items():
-            if text.lower() in food_description.lower():
-                item = TwoLineAvatarIconListItem(text=food_description, secondary_text="Additional Info")
-                item.bind(
-                    on_release=lambda x, food_description=food_description: self.show_dual_input_popup(
-                        food_description))
-                container.add_widget(item)
 
 
 FitaminApp().run()

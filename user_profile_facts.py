@@ -14,10 +14,10 @@ user_profile_data = [
     #Bazal_Metabolizma [5]
     1,
 
-    #Activity_Multiplier [6]
+    #Activity_Level [6]
     "Aktif",
 
-    #Activity_Multiplier_Level [7]
+    #Activity_Level_Multiplier [7]
     1,
 
     #Günlük_Tüketmesi Gereken_Kalori [8]

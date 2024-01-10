@@ -9,15 +9,17 @@ ScreenManager:
         name: 'profile'
 
     EditProfileScreen:
-        name: 'editProfile'    
+        name: 'editProfile'
+        
+    AboutScreen:
+        name: 'about'        
 
 
 <WelcomeScreen>:
-    
     MDTextField:
         id: welcome_screen_user_name_entry
-        hint_text: 'Kullancı Adınızı Giriniz'
-        helper_text: 'Kullanıcı Adınızı daha sonra edit profile sekmesinden değiştirebilirsiniz'
+        hint_text: 'Enter your name please'
+        helper_text: 'You can change it from edit profile screen'
         helper_text_mode: 'on_focus'
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
         size_hint_x: None
@@ -25,14 +27,10 @@ ScreenManager:
 
     MDRectangleFlatButton:
         text: 'Get Input'
-        pos_hint: {"center_x": 0.9, "center_y": 0.5}
+        pos_hint: {"center_x": 0.5, "center_y": 0.4}
         on_release: root.welcome_screen_enter()
         
-    MDRectangleFlatButton:
-        text: 'home'
-        pos_hint: {"center_x": 0.7, "center_y": 0.4}
-        
-        #on_release: root.manager.current = "home"    
+       
 
 
 
@@ -51,6 +49,11 @@ ScreenManager:
             min: 0
             widget_size: 50
             
+            
+            
+        
+            
+            
         MDScrollView:  # Add this MDScrollView
             pos_hint: {"center_x": 0.5, "center_y" : 0.37}
             BoxLayout:  # Container for MDList and CircularProgressBar
@@ -58,18 +61,6 @@ ScreenManager:
                 size_hint_y: None
                 height: self.minimum_height  # Adjust the height dynamically based on content
                     
-                ####Search bar####
-                MDBoxLayout:
-                    adaptive_height: True
-                    
-                    MDIconButton:
-                        icon: 'magnify'
-                        
-                    MDTextField:
-                        id: search_field
-                        hint_text: 'Search item'
-                        on_text: app.filter_items(self.text)  # Call the app's filter_items method
-                        
                 
                 MDList:
     
@@ -162,6 +153,7 @@ ScreenManager:
                                         icon: "calculator"
                                 OneLineIconListItem:
                                     text: "About the Fitamin App "
+                                    on_release: app.change_screen("about") 
                                     IconLeftWidget:
                                         icon: "information-outline"
     
@@ -280,6 +272,7 @@ ScreenManager:
                                         icon: "calculator"
                                 OneLineIconListItem:
                                     text: "About the Fitamin App"
+                                    on_release: app.change_screen("about")
                                     IconLeftWidget:
                                         icon: "information-outline"    
 
@@ -334,7 +327,7 @@ ScreenManager:
         Spinner:
             id: gender_secme
             text: "Cinsiyet"
-            values: ["Erkek", "Kadın"]
+            values: ["Male", "Female"]
             size_hint: None, None
             size: 100, 44
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
@@ -354,11 +347,83 @@ ScreenManager:
         Spinner:
             id: aktiflik_secme
             text: "Aktiflik Seviyesi"
-            values: ["Sedanter", "Haftada 1-3 gün hafif egzersiz", "Haftada 3-5 gün hafif-orta seviye egzersiz", "Her gün orta seviye egzersiz ya da haftada 3-4 gün ağır egzersiz", "Haftada 5-7 gün ağır egzersiz" ]
+            values: ["Sedanter", "1-3 times weekly light exercise", "3-5 times weekly exercise", "Exercise everyday or 3-5 times weekly instense exercise", "5-7 times weekly intense exercise" ]
             size_hint: None, None
             size: 500, 44
             pos_hint: {'center_x': 0.50, 'center_y': 0.20}
 
             on_text: app.root.get_screen('editProfile').activity_level_belirleme(aktiflik_secme.text)        
+
+
+<AboutScreen>
+    name: 'about'
+    MDScreen:
+        MDNavigationLayout:
+            ScreenManager:
+                Screen:
+                    BoxLayout:
+                        orientation: 'vertical'
+                        MDTopAppBar:
+                            title: 'Fitamin App'
+                            left_action_items: [["menu", lambda x: nav_drawer.set_state('toggle')]]
+                            elevation: 5
+                        Widget:
+
+            MDNavigationDrawer:
+                id: nav_drawer
+                ContentNavigationDrawer:
+                    orientation: 'vertical'
+                    padding: "8dp"
+                    spacing: "8dp"
+
+                    Image:
+                        id: avatar
+                        size_hint: (0.5,0.5)
+                        source: "FitaminAppIcon.jpg"
+
+                    MDLabel:
+                        text: "Fitamin App"
+                        font_style: "Subtitle1"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+                    MDLabel:
+                        text: "Have a healthy diet, live a healthy life"
+                        size_hint_y: None
+                        font_style: "Caption"
+                        height: self.texture_size[1]
+
+                    ScrollView:
+                        DrawerList:
+                            id: md_list
+                            MDList:
+                                OneLineIconListItem:
+                                    text: "Profile"
+                                    on_release: app.change_screen("profile")
+                                    IconLeftWidget:
+                                        icon: "python-language"
+                                OneLineIconListItem:
+                                    text: "Hesapla"
+                                    on_release: app.change_screen("calculator")
+                                    IconLeftWidget:
+                                        icon: "calculator"
+                                OneLineIconListItem:
+                                    text: "About the Fitamin App"
+                                    on_release: app.change_screen("about")
+                                    IconLeftWidget:
+                                        icon: "information-outline"        
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 20
+            
+            Label:
+                text: "Hii, I am a 5th year medical student and this is a project that I built in my free time.\\n In the future I am planning to add new features with updates. \\nAlso, this is a free App and I will keep it free because many of us do not recognize how bad we eat. \\nMany of us probably exceed the daily recommended intake amounts and so diseases follow.\\n I hope I could help you a little bit :) ."
+                font_size: '16sp'
+                halign: 'center'
+    
+            Label:
+                text: "If you have any suggestions, feel free to mail me\\nfitaminapp@gmail.com"
+                font_size: '16sp'
+                halign: 'center'
 
 '''

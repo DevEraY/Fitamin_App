@@ -6,7 +6,7 @@ nutrient_values_children_1_3_y_g = {
     "Total Fiber": 19,
     "Fat": None,
     "Linoleic Acid": 7,
-    "α-Linolenic Acid": 0.7,
+    "Alpha-Linolenic Acid": 0.7,
     "Protein": 13
 }
 
@@ -16,7 +16,7 @@ nutrient_values_children_4_8_y_g = {
     "Total Fiber": 25,
     "Fat": None,
     "Linoleic Acid": 10,
-    "α-Linolenic Acid": 0.9,
+    "Alpha-Linolenic Acid": 0.9,
     "Protein": 19
 }
 
@@ -27,7 +27,7 @@ nutrient_values_males_9_13_y_g = {
     "Total Fiber": 31,
     "Fat": None,
     "Linoleic Acid": 12,
-    "α-Linolenic Acid": 1.2,
+    "Alpha-Linolenic Acid": 1.2,
     "Protein": 34
 }
 
@@ -37,7 +37,7 @@ nutrient_values_males_14_18_y_g = {
     "Total Fiber": 38,
     "Fat": None,
     "Linoleic Acid": 16,
-    "α-Linolenic Acid": 1.6,
+    "Alpha-Linolenic Acid": 1.6,
     "Protein": 52
 }
 
@@ -47,7 +47,7 @@ nutrient_values_males_19_30_y_g = {
     "Total Fiber": 38,
     "Fat": None,
     "Linoleic Acid": 17,
-    "α-Linolenic Acid": 1.6,
+    "Alpha-Linolenic Acid": 1.6,
     "Protein": 56
 }
 
@@ -57,7 +57,7 @@ nutrient_values_males_31_50_y_g = {
     "Total Fiber": 38,
     "Fat": None,
     "Linoleic Acid": 17,
-    "α-Linolenic Acid": 1.6,
+    "Alpha-Linolenic Acid": 1.6,
     "Protein": 56
 }
 
@@ -67,7 +67,7 @@ nutrient_values_males_51_70_y_g = {
     "Total Fiber": 30,
     "Fat": None,
     "Linoleic Acid": 14,
-    "α-Linolenic Acid": 1.6,
+    "Alpha-Linolenic Acid": 1.6,
     "Protein": 56
 }
 
@@ -77,7 +77,7 @@ nutrient_values_males_over_70_y_g = {
     "Total Fiber": 30,
     "Fat": None,
     "Linoleic Acid": 14,
-    "α-Linolenic Acid": 1.6,
+    "Alpha-Linolenic Acid": 1.6,
     "Protein": 56
 }
 nutrient_values_females_9_13_y_g = {
@@ -86,7 +86,7 @@ nutrient_values_females_9_13_y_g = {
     "Total Fiber": 26,
     "Fat": None,
     "Linoleic Acid": 10,
-    "α-Linolenic Acid": 1.0,
+    "Alpha-Linolenic Acid": 1.0,
     "Protein": 34
 }
 
@@ -96,7 +96,7 @@ nutrient_values_females_14_18_y_g = {
     "Total Fiber": 26,
     "Fat": None,
     "Linoleic Acid": 11,
-    "α-Linolenic Acid": 1.1,
+    "Alpha-Linolenic Acid": 1.1,
     "Protein": 46
 }
 
@@ -106,7 +106,7 @@ nutrient_values_females_19_30_y_g = {
     "Total Fiber": 25,
     "Fat": None,
     "Linoleic Acid": 12,
-    "α-Linolenic Acid": 1.1,
+    "Alpha-Linolenic Acid": 1.1,
     "Protein": 46
 }
 
@@ -116,7 +116,7 @@ nutrient_values_females_31_50_y_g = {
     "Total Fiber": 25,
     "Fat": None,
     "Linoleic Acid": 12,
-    "α-Linolenic Acid": 1.1,
+    "Alpha-Linolenic Acid": 1.1,
     "Protein": 46
 }
 
@@ -126,7 +126,7 @@ nutrient_values_females_51_70_y_g = {
     "Total Fiber": 21,
     "Fat": None,
     "Linoleic Acid": 11,
-    "α-Linolenic Acid": 1.1,
+    "Alpha-Linolenic Acid": 1.1,
     "Protein": 46
 }
 
@@ -136,7 +136,7 @@ nutrient_values_females_over_70_y_g = {
     "Total Fiber": 21,
     "Fat": None,
     "Linoleic Acid": 11,
-    "α-Linolenic Acid": 1.1,
+    "Alpha-Linolenic Acid": 1.1,
     "Protein": 46
 }
 # Pregnancy values
@@ -146,7 +146,7 @@ nutrient_values_pregnancy_14_18_y = {
     "Total Fiber": 28,
     "Fat": None,
     "Linoleic Acid": 13,
-    "α-Linolenic Acid": 1.4,
+    "Alpha-Linolenic Acid": 1.4,
     "Protein": 71,
 
 }
@@ -157,7 +157,7 @@ nutrient_values_pregnancy_19_30_y = {
     "Total Fiber": 28,
     "Fat": None,
     "Linoleic Acid": 13,
-    "α-Linolenic Acid": 1.4,
+    "Alpha-Linolenic Acid": 1.4,
     "Protein": 71,
 
 }
@@ -168,7 +168,7 @@ nutrient_values_pregnancy_31_50_y = {
     "Total Fiber": 28,
     "Fat": None,
     "Linoleic Acid": 13,
-    "α-Linolenic Acid": 1.4,
+    "Alpha-Linolenic Acid": 1.4,
     "Protein": 71,
 
 }
@@ -180,7 +180,7 @@ nutrient_values_lactation_14_18_y = {
     "Total Fiber": 29,
     "Fat": None,
     "Linoleic Acid": 13,
-    "α-Linolenic Acid": 1.3,
+    "Alpha-Linolenic Acid": 1.3,
     "Protein": 71,
 
 }
@@ -191,7 +191,7 @@ nutrient_values_lactation_19_30_y = {
     "Total Fiber": 29,
     "Fat": None,
     "Linoleic Acid": 13,
-    "α-Linolenic Acid": 1.3,
+    "Alpha-Linolenic Acid": 1.3,
     "Protein": 71,
 
 }
@@ -202,7 +202,7 @@ nutrient_values_lactation_31_50_y = {
     "Total Fiber": 29,
     "Fat": None,
     "Linoleic Acid": 13,
-    "α-Linolenic Acid": 1.3,
+    "Alpha-Linolenic Acid": 1.3,
     "Protein": 71,
 
 }
