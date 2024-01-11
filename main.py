@@ -1190,7 +1190,7 @@ class FitaminApp(MDApp):
 ##############################YENİ_LİSTE##############################
         Liste = self.root.get_screen("calculator").ids.container
 
-        group_names_file = pd.read_excel('food_class_descriptions.xlsx')
+        group_names_file = pd.read_csv('food_class_descriptions.csv')
         group_names = group_names_file['FdGrp_desc']
 
         for group_name in group_names:
