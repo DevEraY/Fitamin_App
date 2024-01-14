@@ -266,7 +266,7 @@ ScreenManager:
                                     IconLeftWidget:
                                         icon: "python-language"
                                 OneLineIconListItem:
-                                    text: "Hesapla"
+                                    text: "Calculate"
                                     on_release: app.change_screen("calculator")
                                     IconLeftWidget:
                                         icon: "calculator"
@@ -403,7 +403,7 @@ ScreenManager:
                                     IconLeftWidget:
                                         icon: "python-language"
                                 OneLineIconListItem:
-                                    text: "Hesapla"
+                                    text: "Calculate"
                                     on_release: app.change_screen("calculator")
                                     IconLeftWidget:
                                         icon: "calculator"

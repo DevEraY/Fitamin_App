@@ -7,7 +7,7 @@ from kivy.uix.screenmanager import ScreenManagerException
 import kivy
 from kivy.lang import Builder
 from kivymd.uix.screen import Screen
-from kivymd.uix.list import MDList
+from kivymd.uix.list import MDList,OneLineListItem
 from kivymd.theming import ThemableBehavior
 from kivymd.uix.list import OneLineIconListItem, IconLeftWidget, ThreeLineListItem
 from kivy.uix.boxlayout import BoxLayout
@@ -514,7 +514,7 @@ class FoodScreen(Screen):
         self.name = name
 
         self.name_edited=name.replace(' ', '_').replace('/', '_').replace(',','_')
-        file_path = self.name_edited + "_data.csv"
+        self.file_path = self.name_edited + "_data.csv"
         self.foods={}
 
         layout = BoxLayout(orientation='vertical', padding=20, spacing=10)
@@ -523,43 +523,54 @@ class FoodScreen(Screen):
         search_layout = BoxLayout( size_hint_y=None, height=50)
         search_icon = MDIconButton(icon='magnify')
         search_field = TextInput(hint_text='Search item', multiline=False)
-        search_field.bind(text=self.filter_items)
+        search_field.bind(on_text_validate=lambda instance: self.filter_items(search_field.text))
         search_layout.add_widget(search_icon)
         search_layout.add_widget(search_field)
 
         # Add an MDList container
         self.Liste = MDList(id="container")
 
-        final_df = pd.read_csv(file_path)
+        final_df = pd.read_csv(self.file_path)
         final_df["portion_amount"].fillna("", inplace=True)
         final_df["portion_name"].fillna("", inplace=True)
         final_df["gram_weight"].fillna("", inplace=True)
+        first_names_df = final_df['description'].str.split(',').str[0].unique()
 
-        for _, row in final_df.iterrows():
-            description = row['description']
-            name = row['name']
-            amount = row['amount']
-            unit = row['unit_name']
-            fdc_id = row['fdc_id']
-            portion_amount = row["portion_amount"]
-            portion_name = row["portion_name"]
-            gram_weight = row["gram_weight"]
 
-            if description not in self.foods:
-                self.foods[description] = Food(description)
+        for food_names in first_names_df:
+            item = OneLineListItem(text=food_names)
 
-            self.foods[description].add_nutrient(name, amount, unit)
-            self.foods[description].add_fdc_id(fdc_id)
-            self.foods[description].add_portion(portion_amount, portion_name, gram_weight)
-        app = MDApp.get_running_app()
-        for food_description, food_instance in self.foods.items():
-            
-            item = TwoLineAvatarIconListItem(text=food_description, secondary_text="Additional Info")
-            on_release_function = lambda x, food_description=food_description, food_instance=food_instance: app.show_dual_input_popup(food_instance)
-
-            item.bind(on_release=on_release_function)
+            # Use lambda to pass the argument without immediate execution
+            item.bind(on_release=lambda instance, food_names=food_names: self.filter_items(food_names))
 
             self.Liste.add_widget(item)
+
+
+        # for _, row in final_df.iterrows():      #şundkai bu for loopu kaldır onun yerine sadece isimleri yazsın eğer kullancı ı tıklarsa diğerlerini alsın
+        #     description = row['description']
+        #     name = row['name']
+        #     amount = row['amount']
+        #     unit = row['unit_name']
+        #     fdc_id = row['fdc_id']
+        #     portion_amount = row["portion_amount"]
+        #     portion_name = row["portion_name"]
+        #     gram_weight = row["gram_weight"]
+        #
+        #     if description not in self.foods:
+        #         self.foods[description] = Food(description)
+        #
+        #     self.foods[description].add_nutrient(name, amount, unit)
+        #     self.foods[description].add_fdc_id(fdc_id)
+        #     self.foods[description].add_portion(portion_amount, portion_name, gram_weight)
+        app = MDApp.get_running_app()
+        # for food_description, food_instance in self.foods.items():
+        #
+        #     item = TwoLineAvatarIconListItem(text=food_description, secondary_text="Additional Info")
+        #     on_release_function = lambda x, food_description=food_description, food_instance=food_instance: app.show_dual_input_popup(food_instance)
+        #
+        #     item.bind(on_release=on_release_function)
+        #
+        #     self.Liste.add_widget(item)
 
             # Wrap the MDList in an MDScrollView
         scroll_view = ScrollView()
@@ -630,16 +641,48 @@ class FoodScreen(Screen):
 
 
 
-    def filter_items(self, instance, text):
+    def filter_items(self, search_text):
         """Filter and update the list based on the search criteria."""
         app = MDApp.get_running_app()
+        final_df = pd.read_csv(self.file_path)
+        final_df["portion_amount"].fillna("", inplace=True)
+        final_df["portion_name"].fillna("", inplace=True)
+        final_df["gram_weight"].fillna("", inplace=True)
+
 
         # Clear existing items in the MDList
         self.Liste.clear_widgets()
+        text=search_text
+        user_input = search_text
+        selected_rows = final_df[final_df['description'].str.contains(user_input, case=False, na=False)]
+
+
+        # Check if any rows are selected
+        if not selected_rows.empty:
+            # Iterate over selected rows
+            for index, row in selected_rows.iterrows():
+                description = row['description']
+                name = row['name']
+                amount = row['amount']
+                unit = row['unit_name']
+                fdc_id = row['fdc_id']
+                portion_amount = row["portion_amount"]
+                portion_name = row["portion_name"]
+                gram_weight = row["gram_weight"]
+
+                # Use the extracted information as needed
+                if description not in self.foods:
+                     self.foods[description] = Food(description)
+
+                self.foods[description].add_nutrient(name, amount, unit)
+                self.foods[description].add_fdc_id(fdc_id)
+                self.foods[description].add_portion(portion_amount, portion_name, gram_weight)
+        else:
+            print(f"No information found for {user_input}")
 
         for food_description, food_instance in self.foods.items():
             if text.lower() in food_description.lower():
-                item = TwoLineAvatarIconListItem(text=food_description, secondary_text="Additional Info")
+                item = OneLineListItem(text=food_description)
                 on_release_function = lambda x, food_description=food_description, food_instance=food_instance: app.show_dual_input_popup(food_instance)
 
                 item.bind(on_release=on_release_function)
@@ -679,11 +722,11 @@ class FitaminApp(MDApp):
 
 
 ############################################ BUCKET LIST (FOODS CONSUMED) MODIFICATION ############################################
-    def create_entry_layout(self, food_name, grams, popup):
-        label_text = f"{food_name}: {grams} grams"
+    def make_entry_layout(self, food, grams, popup):
+        label_text = f"{food.description}: {grams} grams"
         label = MDLabel(text=label_text)
 
-        delete_button = MDIconButton(icon="delete", on_release=lambda instance, name=food_name: self.remove_food(name, popup))
+        delete_button = MDIconButton(icon="delete", on_release=lambda instance, name=food.description: self.remove_food(name, popup))
 
         entry_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=50)  # Adjust height as needed
         entry_layout.add_widget(label)
@@ -710,7 +753,7 @@ class FitaminApp(MDApp):
         box_layout = BoxLayout(orientation='vertical', spacing=10, size_hint_y=None)
 
         for food_name, grams in self.food_basket.items():
-            entry_layout = self.create_entry_layout(food_name, grams, popup)
+            entry_layout = self.make_entry_layout(food_name, grams, popup)
             box_layout.add_widget(entry_layout)
 
         scrollview = ScrollView(size_hint=(1, 1))
@@ -859,7 +902,7 @@ class FitaminApp(MDApp):
         else:
             print("No data found for remaining nutrient intakes.")
 
-        content_layout = GridLayout(cols=1, spacing=20, size_hint_y=None)
+        content_layout = GridLayout(cols=1, spacing=40, size_hint_y=None)
         content_layout.bind(minimum_height=content_layout.setter('height'))
         for widget in dolu_array:
             content_layout.add_widget(widget)
@@ -912,12 +955,17 @@ class FitaminApp(MDApp):
             print("No food items consumed yet.")
 
 
-        content_layout = GridLayout(cols=1, spacing=20, size_hint_y=None)
+        content_layout = GridLayout(cols=1, spacing=40, size_hint_y=None)
         content_layout.bind(minimum_height=content_layout.setter('height'))
+        empty_box_1 = BoxLayout()
+        empty_box_2 = BoxLayout()
+        empty_box_3 = BoxLayout()
+        content_layout.add_widget(empty_box_1)
         for widget in dolu_array:
             content_layout.add_widget(widget)
 
-
+        content_layout.add_widget(empty_box_2)
+        content_layout.add_widget(empty_box_3)
         #content_layout.add_widget(writing_consumed_intakes)
 
 
@@ -951,10 +999,10 @@ class FitaminApp(MDApp):
 
 
 
-    def confirm_quantity_to_food_basket(self, food, user_s_consumed_portions):
-        food_instance = food
-        data_portions=food.portion_amount
-        data_grams = food.gram_weight
+    def confirm_quantity_to_food_basket(self, food_description, user_s_consumed_portions):
+
+        data_portions=food_description.portion_amount
+        data_grams = food_description.gram_weight
         if food_description in self.food_basket:
             self.food_basket[food_description] += user_s_consumed_portions*(data_grams/data_portions)
         else:
@@ -1004,12 +1052,15 @@ class FitaminApp(MDApp):
         dual_input_popup.open()
 
     def show_quantity_popup(self, food):
+        width, height = Window.size[0] * 0.8, Window.size[1] * 0.4
         quantity_popup = Popup(
-            title=f'Enter Amount for {food.description}',
+            title=f'Enter {food.portion_name} for {food.description}',
             size_hint=(None, None),
-            size=(400, 200),
-            auto_dismiss=False
+            size=(width, height),
+            auto_dismiss=True
         )
+
+
 
         quantity_input = QuantityInput(food)
 
@@ -1036,12 +1087,14 @@ class FitaminApp(MDApp):
         quantity_popup.open()
 
     def show_grams_popup(self, food): #burdaki food_description'ı food yaptım
+        width, height = Window.size[0] * 0.8, Window.size[1] * 0.4
         grams_popup = Popup(
             title=f'Enter Grams for {food.description}',
             size_hint=(None, None),
-            size=(400, 200),
-            auto_dismiss=False
+            size=(width, height),
+            auto_dismiss=True
         )
+
 
         grams_input = TextInput(hint_text='Enter Grams')
 
@@ -1194,10 +1247,13 @@ class FitaminApp(MDApp):
         group_names = group_names_file['FdGrp_desc']
 
         for group_name in group_names:
-            item = TwoLineAvatarIconListItem(text=group_name, secondary_text="Additional Info")
+            item = OneLineListItem(text=group_name)
             item.bind(on_release=lambda x, item_text=group_name: self.open_food_screen(item_text))
             Liste.add_widget(item)
-
+        extra_1_to_see_the_last = OneLineListItem(text = "")
+        extra_2_to_see_the_last = OneLineListItem(text="")
+        Liste.add_widget(extra_1_to_see_the_last)
+        Liste.add_widget(extra_2_to_see_the_last)
         ###################################33
 
 
